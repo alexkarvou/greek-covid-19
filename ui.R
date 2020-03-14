@@ -14,13 +14,11 @@ dashboardPage(skin='blue',
                       )),
                     dashboardBody(
                       tabItems(
-                        tabItem(tabName="map",fluidRow(
+                        tabItem(tabName="map",
+                        fluidRow(
                               column(width=9,
                                      box(width=NULL,solidHeader = TRUE,
-                                       leafletOutput("mymap")))))h2("CHURN RETENSION NOVEMBER - 2017")
-                        tabItem(tabName="map",fluidRow(
-                              column(width=9,
-                                     box(width=NULL,solidHeader = TRUE,
-                                       leafletOutput("mymap"))))),
+                                       leafletOutput("mymap")),
+                                     infoBox("New Orders", 10 * 2, icon = icon("credit-card"))))),
                         tabItem(tabName='measures',h2('Nothing Yet'))
                       )))
