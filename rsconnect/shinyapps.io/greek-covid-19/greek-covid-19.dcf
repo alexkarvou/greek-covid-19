@@ -5,6 +5,6 @@ account: greek-covid-19
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 1948510
-bundleId: 2880998
+bundleId: 2881100
 url: https://greek-covid-19.shinyapps.io/greek-covid-19/
-when: 1584193183.46769
+when: 1584195795.90979
