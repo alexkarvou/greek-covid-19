@@ -1,26 +1,29 @@
 library(shiny)
 library(ggplot2)
 library(shinydashboard)
-library(timevis)
-
+library(leaflet)
+library(sf)
+library(here)
+library(dplyr)
 
 function(input, output, session) {
 
-  #annotator things
-  vars<-reactiveValues(local_image_index=1,local_folder_length=0,current_list=NULL)
+  vars<-reactiveValues(current_list=NULL)
 
-
-  observeEvent(input$nextButton,{
-    if (vars$local_image_index<vars$local_folder_length){
-      vars$local_image_index<-vars$local_image_index +1}
-  })
-
-
+  poleis<-st_read(here("shapefiles/poleis.shp"))
+  poleis<-st_transform(poleis, 4326)
+  poleis$NAME<-as.character(poleis$NAME)
+  covid_data<-read.csv(here("data/greece.csv"))
+  covid_data$NAME<-as.character(covid_data$NAME)
+  df<-merge(poleis,covid_data,by='NAME')
+  plot_df<-filter(df,INCIDENTS>0)
   output$mymap <- renderLeaflet({
-    leaflet() %>%
-    addTiles() %>%  # use the default base map which is OpenStreetMap tiles
-    addMarkers(lng=23.7275, lat=37.9838,
-               popup="Greek Covid-19 incidents")
+
+    leaflet(plot_df) %>%
+      addProviderTiles(providers$Esri.WorldGrayCanvas)%>%
+      addCircleMarkers(radius = ~sqrt(INCIDENTS)*5 , popup = paste("Νομός", plot_df$DEPARTMENT, "<br>",
+                                                                  "Περιστατικά:", plot_df$INCIDENTS, "<br>",
+                                                                  "Θάνατοι:", plot_df$DEAD))
   })
 
 
