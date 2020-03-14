@@ -1,0 +1,10 @@
+name: greek-covid-19
+title:
+username:
+account: greek-covid-19
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1948510
+bundleId: 2880998
+url: https://greek-covid-19.shinyapps.io/greek-covid-19/
+when: 1584193183.46769
