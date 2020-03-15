@@ -17,13 +17,34 @@ function(input, output, session) {
   covid_data$NAME<-as.character(covid_data$NAME)
   df<-merge(poleis,covid_data,by='NAME')
   plot_df<-filter(df,INCIDENTS>0)
-  output$mymap <- renderLeaflet({
+  hospitals<-read.csv(here("data/hospitals_of_interest.csv"))
+  hospital_icon1 <- makeAwesomeIcon(icon = 'h-square', library = "fa", markerColor = "gray")
+  hospital_icon2 <- makeAwesomeIcon(icon = 'h-square', library = "fa", markerColor = "white")
 
+  output$mymap <- renderLeaflet({
     leaflet(plot_df) %>%
       addProviderTiles(providers$Esri.WorldGrayCanvas)%>%
       addCircleMarkers(radius = ~sqrt(INCIDENTS)*5 , popup = paste("Νομός", plot_df$DEPARTMENT, "<br>",
                                                                   "Περιστατικά:", plot_df$INCIDENTS, "<br>",
-                                                                  "Θάνατοι:", plot_df$DEAD))
+                                                                  "Θάνατοι:", plot_df$DEAD),
+                                                    opacity=.9,group="Περιστατικα")%>%
+      addAwesomeMarkers(data=filter(hospitals,TYPE=='Βασικό'),
+                    lng=~LONG,
+                    lat = ~LAT,
+                    popup=~NAME,
+                    icon=hospital_icon1,group='Βασικά Νοσοκομεία Αναφοράς')%>%
+      addAwesomeMarkers(data=filter(hospitals,TYPE=='Αναπληρωματικό'),
+                    lng=~LONG,
+                    lat = ~LAT,
+                    popup=~NAME,
+                    icon=hospital_icon2,group='Αναπληρωματικά Νοσοκομεία Αναφοράς')%>%
+      addLayersControl(
+                overlayGroups = c("Περιστατικα",
+                              "Βασικά Νοσοκομεία Αναφοράς",
+                              "Αναπληρωματικά Νοσοκομεία Αναφοράς"))              
+
+
+
   })
 
 
