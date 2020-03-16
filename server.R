@@ -5,10 +5,12 @@ library(leaflet)
 library(sf)
 library(here)
 library(dplyr)
+library(mongolite)
+library(stringr)
 
 function(input, output, session) {
 
-  vars<-reactiveValues(current_list=NULL)
+  vars<-reactiveValues(vulnerableGroup=FALSE,symptoms=FALSE,submit=FALSE,current_list=NULL)
 
   poleis<-st_read(here("shapefiles/poleis.shp"))
   poleis<-st_transform(poleis, 4326)
@@ -41,11 +43,25 @@ function(input, output, session) {
       addLayersControl(
                 overlayGroups = c("Περιστατικα",
                               "Βασικά Νοσοκομεία Αναφοράς",
-                              "Αναπληρωματικά Νοσοκομεία Αναφοράς"))              
-
-
+                              "Αναπληρωματικά Νοσοκομεία Αναφοράς"))
 
   })
+  observeEvent(input$push_entry, {
+    collection<-mongo(db='greek-covid-19',
+                    collection ='Entries',
+                    url="mongodb+srv://greekcovid19:greekcovid19@cluster0-vqe01.gcp.mongodb.net/test",
+            verbose=TRUE)
+    db_df<-data.frame(str_c(input$symptomsGroup,sep=' ',collapse=' '),str_c(input$vulnerableGroup,sep=' ',collapse=' '))
+    names(db_df)<-c('Symptoms','Vulnerablegroup')
+    if (vars$submit==FALSE){
+      collection$insert(db_df)
+      showModal(modalDialog(
+          title = "Η καταχώριση ήταν επιτυχής",
+          "Ευχαριστούμε για τον χρόνο σας"
+        ))
+      vars$submit<-TRUE  
+    }
 
+  })
 
   }

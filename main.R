@@ -10,9 +10,9 @@ parser$add_argument("-mode",default="local")
 args<-parser$parse_args()
 
 # Authorize
-setAccountInfo(name='greek-covid-19',
-			  token='D13BF982482782EB8F24FA6C09D4661C',
-			  secret='ih8Oa3FOe/4rPZgrlP8mC/7DbkNCudnBFTZ9qQym')
+setAccountInfo(name='chris-fotis',
+			  token='7BB2FD8EE0D82F7A2A8C0BCEEB84FB36',
+			  secret='3NXitayguu4ecZvydBeJbIdaFEon8MFW9pPkQNxX')
 
 
 if(args$mode=="local"){
